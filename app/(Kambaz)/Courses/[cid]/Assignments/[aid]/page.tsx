@@ -1,16 +1,54 @@
 'use client';
 
-export default function AssignmentEditor() {
+import { useState, useEffect } from 'react';
+
+export default function AssignmentEditor({ params }: { params: Promise<{ aid: string }> }) {
+  const [aid, setAid] = useState<string>('');
+  
+  useEffect(() => {
+    params.then(({ aid }) => setAid(aid));
+  }, [params]);
+  
+  // Map assignment IDs to their names and descriptions
+  const assignmentData: { [key: string]: { name: string; description: string } } = {
+    '123': { 
+      name: 'A1 - ENV + HTML',
+      description: 'The assignment is available online Submit a link to the landing page of your Web application running on Netlify. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kanbas application Links to all relevant source code repositories The Kanbas application should include a link to navigate back to the landing page.'
+    },
+    '124': { 
+      name: 'A2 - CSS + BOOTSTRAP',
+      description: 'Create a responsive web page using CSS and Bootstrap. Implement a mobile-first design with proper grid layout, navigation components, and custom styling. Include at least 3 different Bootstrap components and ensure the page looks good on all screen sizes.'
+    },
+    '125': { 
+      name: 'A3 - JAVASCRIPT + REACT',
+      description: 'Build a React application with JavaScript functionality. Create interactive components, handle state management, and implement user interactions. Include forms, event handlers, and dynamic content rendering. Deploy the application to a hosting platform.'
+    },
+    '126': { 
+      name: 'A4 - STATE + REDUX',
+      description: 'Implement state management using Redux in a React application. Create actions, reducers, and connect components to the Redux store. Handle complex state updates, middleware, and asynchronous operations. Demonstrate proper Redux patterns and best practices.'
+    },
+    '127': { 
+      name: 'A5 - NODE + SESSION',
+      description: 'Develop a Node.js backend application with session management. Implement user authentication, session handling, and API endpoints. Use Express.js, middleware, and database integration. Include proper error handling and security measures.'
+    },
+    '128': { 
+      name: 'A6 - MONGO + MONGOOSE',
+      description: 'Create a full-stack application with MongoDB and Mongoose. Design database schemas, implement CRUD operations, and handle data relationships. Include data validation, query optimization, and proper error handling. Deploy with a cloud database service.'
+    }
+  };
+  
+  const assignment = assignmentData[aid] || { name: 'Loading...', description: 'Loading assignment details...' };
+  
   return (
     <div id="wd-assignments-editor">
       <label htmlFor="wd-name">Assignment Name</label>
       <br />
-      <input id="wd-name" defaultValue="A1 - ENV + HTML" /><br /><br />
+      <input id="wd-name" defaultValue={assignment.name} /><br /><br />
       
       <textarea id="wd-description" 
           cols={40} 
           rows={8} 
-          defaultValue="The assignment is available online Submit a link to the landing page of your Web application running on Netlify. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kanbas application Links to all relevant source code repositories The Kanbas application should include a link to navigate back to the landing page." />
+          defaultValue={assignment.description} />
       <br />
       
       <table>
