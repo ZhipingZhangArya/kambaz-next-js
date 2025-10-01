@@ -1,21 +1,21 @@
 import Modules from "../Modules/page";
 import CourseStatus from "./Status";
 
-export default function Home() {
+interface HomeProps {
+  params: Promise<{ cid: string }>;
+}
+
+export default async function Home({ params }: HomeProps) {
+  const { cid } = await params;
+  
   return (
-    <div id="wd-home">
-      <table>
-        <tbody>
-          <tr>
-            <td valign="top" width="70%">
-              <Modules />
-            </td>
-            <td valign="top">
-              <CourseStatus />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="d-flex" id="wd-home">
+      <div className="flex-fill me-5">
+        <Modules params={params} />
+      </div>
+      <div className="d-none d-lg-block">
+        <CourseStatus />
+      </div>
     </div>
   );
 }

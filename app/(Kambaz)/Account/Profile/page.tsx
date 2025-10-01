@@ -1,23 +1,75 @@
 import Link from "next/link";
+import { Form } from "react-bootstrap";
 
 export default function Profile() {
   return (
-    <div id="wd-profile-screen">
-      <h3>Profile</h3>
-      <input defaultValue="Zhiping Zhang" placeholder="username" className="wd-username"/><br/>
-      <input defaultValue="123" placeholder="password" type="password"
-             className="wd-password" /><br/>
-      <input defaultValue="Zhiping" placeholder="First Name" id="wd-firstname" /><br/>
-      <input defaultValue="Zhang" placeholder="Last Name" id="wd-lastname" /><br/>
-      <input defaultValue="2000-01-01" type="date" id="wd-dob" /><br/>
-      <input defaultValue="zhang.zhip@northeastern.edu" type="email" id="wd-email" /><br/>
-      <select defaultValue="STUDENT" id="wd-role">
-        <option value="USER">User</option>
-        <option value="ADMIN">Admin</option>
-        <option value="FACULTY">Faculty</option>
-        <option value="STUDENT">Student</option>
-      </select><br/>
-      <Link href="Signin"> Sign out </Link>
+    <div id="wd-profile-screen" className="container-fluid p-4">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-4">
+          <h1 className="mb-4 fw-bold text-dark">Profile</h1>
+          
+          <Form.Control 
+            id="wd-username"
+            defaultValue="Zhiping Zhang"
+            className="mb-3 border-secondary"
+            style={{ fontSize: '16px', padding: '12px' }}
+          />
+          
+          <Form.Control 
+            id="wd-password"
+            defaultValue="1234"
+            type="password"
+            className="mb-3 border-secondary"
+            style={{ fontSize: '16px', padding: '12px' }}
+          />
+          
+          <Form.Control 
+            id="wd-first-name"
+            defaultValue="Zhiping"
+            className="mb-3 border-secondary"
+            style={{ fontSize: '16px', padding: '12px' }}
+          />
+          
+          <Form.Control 
+            id="wd-last-name"
+            defaultValue="Zhang"
+            className="mb-3 border-secondary"
+            style={{ fontSize: '16px', padding: '12px' }}
+          />
+          
+          <Form.Control 
+            id="wd-dob"
+            type="date"
+            placeholder="mm/dd/yyyy"
+            className="mb-3 border-secondary"
+            style={{ fontSize: '16px', padding: '12px' }}
+          />
+          
+          <Form.Control 
+            id="wd-email"
+            defaultValue="zhang.zhip@northeastern.edu"
+            type="email"
+            className="mb-3 border-secondary"
+            style={{ fontSize: '16px', padding: '12px' }}
+          />
+          
+          <Form.Control 
+            id="wd-role"
+            defaultValue="Student"
+            className="mb-3 border-secondary"
+            style={{ fontSize: '16px', padding: '12px' }}
+          />
+          
+          <Link 
+            id="wd-signout-btn"
+            href="/Account/Signin"
+            className="btn btn-danger w-100"
+            style={{ fontSize: '16px', padding: '12px' }}
+          >
+            Signout
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
