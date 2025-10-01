@@ -77,7 +77,7 @@ export default async function Modules({ params }: ModulesProps) {
     }
   };
 
-  const content = getCourseContent(cid);
+  getCourseContent(cid);
 
   return (
     <div>

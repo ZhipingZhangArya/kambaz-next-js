@@ -6,8 +6,6 @@ interface HomeProps {
 }
 
 export default async function Home({ params }: HomeProps) {
-  const { cid } = await params;
-  
   return (
     <div className="d-flex" id="wd-home">
       <div className="flex-fill me-5">

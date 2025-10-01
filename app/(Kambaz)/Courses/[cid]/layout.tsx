@@ -10,7 +10,7 @@ interface CoursesLayoutProps {
   params: Promise<{ cid: string }>;
 }
 
-export default function CoursesLayout({ children, params }: CoursesLayoutProps) {
+export default function CoursesLayout({ children }: CoursesLayoutProps) {
   const pathname = usePathname();
   
   // Extract course ID and current page from pathname

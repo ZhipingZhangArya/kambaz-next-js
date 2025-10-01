@@ -87,7 +87,7 @@ export default async function Assignments({ params }: AssignmentsProps) {
         </div>
         
         <div className="border border-top-0">
-          {assignments.map((assignment, index) => (
+          {assignments.map((assignment) => (
             <div key={assignment.id} className="border-bottom p-3" style={{ borderLeft: '3px solid green' }}>
               <Link 
                 href={`/Courses/${cid}/Assignments/${assignment.id}`}
