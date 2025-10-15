@@ -22,16 +22,6 @@ export default function Labs() {
           </Link>
         </li>
       </ul>
-      <p>
-        <a 
-          href="https://github.com/ZhipingZhangArya/kambaz-next-js" 
-          id="wd-github"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub Repository
-        </a>
-      </p>
     </div>
   );
 }
