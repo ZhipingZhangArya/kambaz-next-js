@@ -14,7 +14,7 @@ export default function Destructing() {
      name = {name}<br />
      age = {age}
      <h3>Array Destructing</h3>
-     const [first, second, third] = ["one","two","three"]<br/><br/>
+     const [first, second, third] = [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;]<br/><br/>
      first = {first}<br />
      second = {second}<br />
      third = {third}<hr />

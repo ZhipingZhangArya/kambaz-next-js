@@ -1,9 +1,9 @@
-// Import JSON data using require for better compatibility with Next.js 15.5.3 + Turbopack
-const coursesData = require("./courses.json");
-const modulesData = require("./modules.json");
-const assignmentsData = require("./assignments.json");
-const usersData = require("./users.json");
-const enrollmentsData = require("./enrollments.json");
+// Import JSON data using ES6 imports
+import coursesData from "./courses.json";
+import modulesData from "./modules.json";
+import assignmentsData from "./assignments.json";
+import usersData from "./users.json";
+import enrollmentsData from "./enrollments.json";
 
 export const courses = coursesData;
 export const modules = modulesData;
