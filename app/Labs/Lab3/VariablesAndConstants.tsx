@@ -1,5 +1,5 @@
 export default function VariablesAndConstants() {
- let functionScoped = 2;
+ const functionScoped = 2;
  const blockScoped = 5;
  const constant1 = functionScoped - blockScoped;
  return(
