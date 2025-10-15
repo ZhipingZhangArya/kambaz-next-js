@@ -177,6 +177,14 @@ export default function KambazLayout({ children }: Readonly<{ children: ReactNod
               </Link>
               
               <Link 
+                href={`/Courses/${pathname.split('/')[2]}/Grades`}
+                className="dropdown-item"
+                onClick={closeCourseDropdown}
+              >
+                <span className="text-danger fs-6">Grades</span>
+              </Link>
+              
+              <Link 
                 href={`/Courses/${pathname.split('/')[2]}/People/Table`}
                 className="dropdown-item"
                 onClick={closeCourseDropdown}

@@ -68,7 +68,11 @@ export default function Assignments() {
                     <FaFileAlt className="me-2 fs-4 text-secondary mt-1" />
                     <div>
                       <div className="fw-bold fs-5 mb-1">{assignment.title}</div>
-                      <div className="text-secondary">Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts</div>
+                      <div className="text-secondary">
+                        <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 6 at 12:00am
+                        <br />
+                        Due May 13 at 11:59pm | 100 pts
+                      </div>
                     </div>
                   </div>
                   <div className="d-flex align-items-center">
