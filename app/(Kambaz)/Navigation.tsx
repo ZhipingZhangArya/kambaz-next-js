@@ -12,7 +12,7 @@ export default function KambazNavigation() {
   const pathname = usePathname();
   const links = [
     { label: "Dashboard", path: "/Dashboard", icon: AiOutlineDashboard },
-    { label: "Courses",   path: "/Dashboard", icon: LiaBookSolid },
+    { label: "Courses",   path: "/Courses", icon: LiaBookSolid },
     { label: "Calendar",  path: "/Calendar",  icon: IoCalendarOutline },
     { label: "Inbox",     path: "/Inbox",     icon: FaInbox },
     { label: "Labs",      path: "/Labs",      icon: LiaCogSolid },
