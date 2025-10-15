@@ -1,50 +1,19 @@
+"use client";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Button, Form } from "react-bootstrap";
 import { FaSearch, FaPlus, FaChevronDown, FaFileAlt, FaCheckCircle } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
+import assignments from "../../../Database/assignments.json";
+import { Assignment } from "../../../Database";
 
-interface AssignmentsProps {
-  params: Promise<{ cid: string }>;
-}
-
-export default async function Assignments({ params }: AssignmentsProps) {
-  const { cid } = await params;
+export default function Assignments() {
+  const { cid } = useParams();
   
-  // Course-specific assignments based on course ID
-  const getCourseAssignments = (courseId: string) => {
-    switch (courseId) {
-      case '1234':
-        return [
-          { id: '123', title: 'A1', description: 'Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts' },
-          { id: '124', title: 'A2', description: 'Multiple Modules | Not available until May 13 at 12:00am | Due May 20 at 11:59pm | 100 pts' },
-          { id: '125', title: 'A3', description: 'Multiple Modules | Not available until May 20 at 12:00am | Due May 27 at 11:59pm | 100 pts' },
-          { id: '126', title: 'A4', description: 'Multiple Modules | Not available until May 27 at 12:00am | Due Jun 3 at 11:59pm | 100 pts' },
-          { id: '127', title: 'A5', description: 'Multiple Modules | Not available until Jun 3 at 12:00am | Due Jun 10 at 11:59pm | 100 pts' }
-        ];
-      case '2345':
-        return [
-          { id: '201', title: 'A1', description: 'Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts' },
-          { id: '202', title: 'A2', description: 'Multiple Modules | Not available until May 13 at 12:00am | Due May 20 at 11:59pm | 100 pts' },
-          { id: '203', title: 'A3', description: 'Multiple Modules | Not available until May 20 at 12:00am | Due May 27 at 11:59pm | 100 pts' },
-          { id: '204', title: 'A4', description: 'Multiple Modules | Not available until May 27 at 12:00am | Due Jun 3 at 11:59pm | 100 pts' }
-        ];
-      case '3456':
-        return [
-          { id: '301', title: 'A1', description: 'Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts' },
-          { id: '302', title: 'A2', description: 'Multiple Modules | Not available until May 13 at 12:00am | Due May 20 at 11:59pm | 100 pts' },
-          { id: '303', title: 'A3', description: 'Multiple Modules | Not available until May 20 at 12:00am | Due May 27 at 11:59pm | 100 pts' },
-          { id: '304', title: 'A4', description: 'Multiple Modules | Not available until May 27 at 12:00am | Due Jun 3 at 11:59pm | 100 pts' }
-        ];
-      default:
-        return [
-          { id: '001', title: 'A1', description: 'Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts' },
-          { id: '002', title: 'A2', description: 'Multiple Modules | Not available until May 13 at 12:00am | Due May 20 at 11:59pm | 100 pts' }
-        ];
-    }
-  };
-
-  const assignments = getCourseAssignments(cid);
+  // Filter assignments for the current course
+  const courseAssignments = (assignments as Assignment[])
+    .filter((assignment: Assignment) => assignment.course === cid);
 
   return (
     <div id="wd-assignments">
@@ -87,10 +56,10 @@ export default async function Assignments({ params }: AssignmentsProps) {
         </div>
         
         <div className="border border-top-0">
-          {assignments.map((assignment) => (
-            <div key={assignment.id} className="border-bottom p-3" style={{ borderLeft: '3px solid green' }}>
+          {courseAssignments.map((assignment) => (
+            <div key={assignment._id} className="border-bottom p-3" style={{ borderLeft: '3px solid green' }}>
               <Link 
-                href={`/Courses/${cid}/Assignments/${assignment.id}`}
+                href={`/Courses/${cid}/Assignments/${assignment._id}`}
                 className="text-decoration-none text-dark"
               >
                 <div className="d-flex align-items-start justify-content-between">
@@ -99,7 +68,7 @@ export default async function Assignments({ params }: AssignmentsProps) {
                     <FaFileAlt className="me-2 fs-4 text-secondary mt-1" />
                     <div>
                       <div className="fw-bold fs-5 mb-1">{assignment.title}</div>
-                      <div className="text-secondary">{assignment.description}</div>
+                      <div className="text-secondary">Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts</div>
                     </div>
                   </div>
                   <div className="d-flex align-items-center">
