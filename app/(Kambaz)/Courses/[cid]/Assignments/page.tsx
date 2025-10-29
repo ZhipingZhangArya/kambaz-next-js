@@ -1,19 +1,51 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button, Form } from "react-bootstrap";
-import { FaSearch, FaPlus, FaChevronDown, FaFileAlt, FaCheckCircle } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { Button, Form, Modal } from "react-bootstrap";
+import { FaSearch, FaPlus, FaChevronDown, FaFileAlt, FaCheckCircle, FaTrash } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
-import assignments from "../../../Database/assignments.json";
 import { Assignment } from "../../../Database";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
   const { cid } = useParams();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
+  
+  // Check if current user is faculty
+  const isFaculty = currentUser?.role === "FACULTY";
   
   // Filter assignments for the current course
-  const courseAssignments = (assignments as Assignment[])
-    .filter((assignment: Assignment) => assignment.course === cid);
+  const courseAssignments = assignments.filter((assignment: any) => assignment.course === cid);
+  
+  const handleDeleteClick = (assignment: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAssignmentToDelete(assignment);
+    setShowDeleteModal(true);
+  };
+  
+  const handleDeleteConfirm = () => {
+    if (assignmentToDelete) {
+      dispatch(deleteAssignment(assignmentToDelete._id));
+      setShowDeleteModal(false);
+      setAssignmentToDelete(null);
+    }
+  };
+  
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setAssignmentToDelete(null);
+  };
 
   return (
     <div id="wd-assignments">
@@ -30,14 +62,20 @@ export default function Assignments() {
             />
           </div>
         </div>
-        <div className="d-flex gap-2">
-          <Button variant="secondary" className="text-nowrap">
-            <FaPlus className="me-1" /> Group
-          </Button>
-          <Button variant="danger" className="text-nowrap">
-            <FaPlus className="me-1" /> Assignment
-          </Button>
-        </div>
+        {isFaculty && (
+          <div className="d-flex gap-2">
+            <Button variant="secondary" className="text-nowrap">
+              <FaPlus className="me-1" /> Group
+            </Button>
+            <Button 
+              variant="danger" 
+              className="text-nowrap"
+              onClick={() => router.push(`/Courses/${cid}/Assignments/Editor`)}
+            >
+              <FaPlus className="me-1" /> Assignment
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Assignments Section */}
@@ -58,12 +96,25 @@ export default function Assignments() {
         <div className="border border-top-0">
           {courseAssignments.map((assignment) => (
             <div key={assignment._id} className="border-bottom p-3" style={{ borderLeft: '3px solid green' }}>
-              <Link 
-                href={`/Courses/${cid}/Assignments/${assignment._id}`}
-                className="text-decoration-none text-dark"
-              >
-                <div className="d-flex align-items-start justify-content-between">
-                  <div className="d-flex align-items-start flex-fill">
+              <div className="d-flex align-items-start justify-content-between">
+                {isFaculty ? (
+                  <Link 
+                    href={`/Courses/${cid}/Assignments/Editor?aid=${assignment._id}`}
+                    className="text-decoration-none text-dark d-flex align-items-start flex-fill"
+                  >
+                    <BsGripVertical className="me-2 fs-3" />
+                    <FaFileAlt className="me-2 fs-4 text-secondary mt-1" />
+                    <div>
+                      <div className="fw-bold fs-5 mb-1">{assignment.title}</div>
+                      <div className="text-secondary">
+                        <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 6 at 12:00am
+                        <br />
+                        Due May 13 at 11:59pm | 100 pts
+                      </div>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="text-dark d-flex align-items-start flex-fill">
                     <BsGripVertical className="me-2 fs-3" />
                     <FaFileAlt className="me-2 fs-4 text-secondary mt-1" />
                     <div>
@@ -75,16 +126,42 @@ export default function Assignments() {
                       </div>
                     </div>
                   </div>
-                  <div className="d-flex align-items-center">
-                    <FaCheckCircle className="me-2 fs-5 text-success" />
-                    <IoEllipsisVertical className="fs-4 text-secondary" />
-                  </div>
+                )}
+                <div className="d-flex align-items-center">
+                  <FaCheckCircle className="me-2 fs-5 text-success" />
+                  {isFaculty && (
+                    <button
+                      onClick={(e) => handleDeleteClick(assignment, e)}
+                      className="btn btn-link text-dark p-1"
+                    >
+                      <FaTrash />
+                    </button>
+                  )}
+                  <IoEllipsisVertical className="fs-4 text-secondary" />
                 </div>
-              </Link>
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={handleDeleteCancel}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to remove this assignment?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleDeleteCancel}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteConfirm}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

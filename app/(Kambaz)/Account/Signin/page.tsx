@@ -1,7 +1,59 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
-import { Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { Form, Button } from "react-bootstrap";
+import { setCurrentUser } from "../reducer";
+import * as db from "../../Database";
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState<any>({});
+  const dispatch = useDispatch();
+  const router = useRouter();
+  
+  const signin = () => {
+    console.log("Signin attempt:", credentials);
+    if (!credentials.username || !credentials.password) {
+      alert("Please enter both username and password");
+      return;
+    }
+    
+    // First check localStorage for signup users
+    let user = null;
+    const storedUsers = localStorage.getItem('signupUsers');
+    if (storedUsers) {
+      try {
+        const users = JSON.parse(storedUsers);
+        user = users.find(
+          (u: any) =>
+            u.username === credentials.username &&
+            u.password === credentials.password
+        );
+      } catch (e) {
+        console.error("Error parsing stored users:", e);
+      }
+    }
+    
+    // If not found in localStorage, check database
+    if (!user) {
+      user = db.users.find(
+        (u: any) =>
+          u.username === credentials.username &&
+          u.password === credentials.password
+      );
+    }
+    
+    console.log("User found:", user);
+    if (!user) {
+      alert("Invalid username or password");
+      return;
+    }
+    dispatch(setCurrentUser(user));
+    console.log("User dispatched to Redux");
+    router.push("/Dashboard");
+  };
+  
   return (
     <div id="wd-signin-screen" className="container-fluid p-4">
       <div className="row justify-content-center">
@@ -13,6 +65,8 @@ export default function Signin() {
             placeholder="username"
             className="mb-3 border-secondary"
             style={{ fontSize: '16px', padding: '12px' }}
+            value={credentials.username || ""}
+            onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
           />
           
           <Form.Control 
@@ -21,16 +75,18 @@ export default function Signin() {
             type="password"
             className="mb-3 border-secondary"
             style={{ fontSize: '16px', padding: '12px' }}
+            value={credentials.password || ""}
+            onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
           />
           
-          <Link 
+          <Button 
             id="wd-signin-btn"
-            href="/Account/Profile"
+            onClick={signin}
             className="btn btn-primary w-100 mb-3"
             style={{ fontSize: '16px', padding: '12px' }}
           >
             Signin
-          </Link>
+          </Button>
           
           <Link 
             id="wd-signup-link" 

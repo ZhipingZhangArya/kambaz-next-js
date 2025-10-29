@@ -10,6 +10,8 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import "./styles.css";
+import store from "./store";
+import { Provider } from "react-redux";
 
 export default function KambazLayout({ children }: Readonly<{ children: ReactNode }>) {
   const pathname = usePathname();
@@ -98,9 +100,10 @@ export default function KambazLayout({ children }: Readonly<{ children: ReactNod
   };
 
   return (
-    <div id="wd-kambaz">
-      {/* Mobile Header */}
-      <div className="d-flex justify-content-between align-items-center bg-dark text-white p-2 d-md-none mobile-header">
+    <Provider store={store}>
+      <div id="wd-kambaz">
+        {/* Mobile Header */}
+        <div className="d-flex justify-content-between align-items-center bg-dark text-white p-2 d-md-none mobile-header">
         <button 
           className="btn btn-link text-white p-0 border-0"
           onClick={toggleDrawer}
@@ -200,7 +203,7 @@ export default function KambazLayout({ children }: Readonly<{ children: ReactNod
       {isDrawerOpen && (
         <div className="mobile-drawer-overlay d-md-none" onClick={closeDrawer} style={{ display: isDrawerOpen ? 'flex' : 'none' }}>
           <div className="mobile-drawer" onClick={(e) => e.stopPropagation()}>
-              <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
+              <div className="d-flex justify-content-between align-items-center p-3 py-4 border-bottom">
                 <div className="d-flex align-items-center">
                   <Image src="/neulogo.png" width={66} height={66} alt="Northeastern University" className="me-3" />
                   <span className="fw-bold text-danger" style={{ fontSize: '3rem' }}>KAMBAZ</span>
@@ -283,6 +286,7 @@ export default function KambazLayout({ children }: Readonly<{ children: ReactNod
           {children}
         </div>
       </div>
-    </div>
+      </div>
+    </Provider>
   );
 }
