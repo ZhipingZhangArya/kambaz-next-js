@@ -9,7 +9,7 @@ const loadInitialState = () => {
     if (storedEnrollments) {
       try {
         return JSON.parse(storedEnrollments);
-      } catch (e) {
+      } catch {
         return enrollments;
       }
     }

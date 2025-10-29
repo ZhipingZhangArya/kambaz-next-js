@@ -8,6 +8,7 @@ import { setCurrentUser } from "../reducer";
 import * as db from "../../Database";
 
 export default function Signin() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [credentials, setCredentials] = useState<any>({});
   const dispatch = useDispatch();
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function Signin() {
     if (storedUsers) {
       try {
         const users = JSON.parse(storedUsers);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         user = users.find(
           (u: any) =>
             u.username === credentials.username &&
@@ -37,6 +39,7 @@ export default function Signin() {
     
     // If not found in localStorage, check database
     if (!user) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       user = db.users.find(
         (u: any) =>
           u.username === credentials.username &&

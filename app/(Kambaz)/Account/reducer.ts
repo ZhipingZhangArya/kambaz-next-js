@@ -7,7 +7,7 @@ const loadInitialState = () => {
     if (storedUser) {
       try {
         return JSON.parse(storedUser);
-      } catch (e) {
+      } catch {
         return null;
       }
     }
