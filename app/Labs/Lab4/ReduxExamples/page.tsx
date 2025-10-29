@@ -4,6 +4,8 @@ import CounterRedux from "./CounterRedux";
 import AddRedux from "./AddRedux";
 import TodoList from "./todos/TodoList";
 
+export const dynamic = 'force-dynamic';
+
 export default function ReduxExamples() {
   return(
     <div id="wd-redux-examples" className="mt-4">
