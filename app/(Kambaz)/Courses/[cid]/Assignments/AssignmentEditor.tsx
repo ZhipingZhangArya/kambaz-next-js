@@ -21,6 +21,7 @@ export default function AssignmentEditor() {
   const existingAssignment = aid ? assignments.find((a: any) => a._id === aid && a.course === cid) : null;
   
   const [assignment, setAssignment] = useState({
+    _id: "",
     title: "",
     description: "",
     points: 100,
