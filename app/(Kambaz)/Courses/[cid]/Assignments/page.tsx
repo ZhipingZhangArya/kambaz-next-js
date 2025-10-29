@@ -94,7 +94,7 @@ export default function Assignments() {
         </div>
         
         <div className="border border-top-0">
-          {courseAssignments.map((assignment) => (
+          {courseAssignments.map((assignment: any) => (
             <div key={assignment._id} className="border-bottom p-3" style={{ borderLeft: '3px solid green' }}>
               <div className="d-flex align-items-start justify-content-between">
                 {isFaculty ? (
