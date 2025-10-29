@@ -156,7 +156,7 @@ export default function Dashboard() {
                 )}
                 <CardBody>
                   <div className="d-flex gap-2 align-items-center flex-wrap">
-                    {isEnrolled(course._id) && (
+                    {!showAllCourses && isEnrolled(course._id) && (
                       <Button 
                         variant="primary"
                         onClick={(e) => handleCourseNavigation(e, course._id)}
