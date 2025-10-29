@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import ClickEvent from "./ClickEvent";
 import PassingDataOnEvent from "./PassingDataOnEvent";
 import PassingFunctions from "./PassingFunctions";
@@ -10,9 +11,12 @@ import DateStateVariable from "./DateStateVariable";
 import ObjectStateVariable from "./ObjectStateVariable";
 import ArrayStateVariable from "./ArrayStateVariable";
 import ParentStateComponent from "./ParentStateComponent";
-import ReduxExamples from "./ReduxExamples/page";
 import store from "./store";
 import { Provider } from "react-redux";
+
+const ReduxExamples = dynamic(() => import("./ReduxExamples/page"), {
+  ssr: false,
+});
 
 export default function Lab4() {
   function sayHello() {

@@ -6,15 +6,12 @@ import { Button, FormControl } from "react-bootstrap";
 import { setCurrentUser, updateCurrentUser } from "../reducer";
 
 export default function Profile() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profile, setProfile] = useState<any>({});
   const dispatch = useDispatch();
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   
   // Helper function to update signupUsers in localStorage
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateSignupUsers = (updatedUser: any) => {
     const storedUsers = localStorage.getItem('signupUsers');
     if (storedUsers) {
@@ -32,7 +29,6 @@ export default function Profile() {
   };
   
   // Helper function to handle field updates
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFieldUpdate = (field: string, value: any) => {
     const updatedProfile = { ...profile, [field]: value };
     setProfile(updatedProfile);

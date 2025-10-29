@@ -7,7 +7,6 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { FaSearch, FaPlus, FaChevronDown, FaFileAlt, FaCheckCircle, FaTrash } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { Assignment } from "../../../Database";
 import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
