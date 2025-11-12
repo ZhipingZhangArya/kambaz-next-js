@@ -27,8 +27,18 @@ export const updateUser = async (user: any) => {
 };
 
 export const profile = async () => {
-  const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
+    return response.data;
+  } catch (error: any) {
+    // If 401, user is not authenticated - return null
+    // This is expected when the user hasn't signed in yet
+    if (error.response?.status === 401) {
+      return null;
+    }
+    // Re-throw other errors
+    throw error;
+  }
 };
 
 export const signout = async () => {
