@@ -5,94 +5,81 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { Form, Button } from "react-bootstrap";
 import { setCurrentUser } from "../reducer";
-import * as db from "../../Database";
+import * as client from "../client";
 
 export default function Signin() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [credentials, setCredentials] = useState<any>({});
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
-  
-  const signin = () => {
-    console.log("Signin attempt:", credentials);
+
+  const signin = async () => {
     if (!credentials.username || !credentials.password) {
-      alert("Please enter both username and password");
+      setError("Please enter both username and password");
       return;
     }
-    
-    // First check localStorage for signup users
-    let user = null;
-    const storedUsers = localStorage.getItem('signupUsers');
-    if (storedUsers) {
-      try {
-        const users = JSON.parse(storedUsers);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        user = users.find(
-          (u: any) =>
-            u.username === credentials.username &&
-            u.password === credentials.password
-        );
-      } catch (e) {
-        console.error("Error parsing stored users:", e);
+    try {
+      const user = await client.signin(credentials);
+      if (!user) {
+        setError("Invalid username or password");
+        return;
       }
+      dispatch(setCurrentUser(user));
+      setError(null);
+      router.push("/Dashboard");
+    } catch (e: any) {
+      const message =
+        e?.response?.data?.message ?? "Unable to sign in. Please try again.";
+      setError(message);
     }
-    
-    // If not found in localStorage, check database
-    if (!user) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      user = db.users.find(
-        (u: any) =>
-          u.username === credentials.username &&
-          u.password === credentials.password
-      );
-    }
-    
-    console.log("User found:", user);
-    if (!user) {
-      alert("Invalid username or password");
-      return;
-    }
-    dispatch(setCurrentUser(user));
-    console.log("User dispatched to Redux");
-    router.push("/Dashboard");
   };
-  
+
   return (
     <div id="wd-signin-screen" className="container-fluid p-4">
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-4">
           <h1 className="mb-4 fw-bold text-dark">Signin</h1>
-          
-          <Form.Control 
+
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+
+          <Form.Control
             id="wd-username"
             placeholder="username"
             className="mb-3 border-secondary"
-            style={{ fontSize: '16px', padding: '12px' }}
+            style={{ fontSize: "16px", padding: "12px" }}
             value={credentials.username || ""}
-            onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+            onChange={(e) =>
+              setCredentials({ ...credentials, username: e.target.value })
+            }
           />
-          
-          <Form.Control 
+
+          <Form.Control
             id="wd-password"
-            placeholder="password" 
+            placeholder="password"
             type="password"
             className="mb-3 border-secondary"
-            style={{ fontSize: '16px', padding: '12px' }}
+            style={{ fontSize: "16px", padding: "12px" }}
             value={credentials.password || ""}
-            onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+            onChange={(e) =>
+              setCredentials({ ...credentials, password: e.target.value })
+            }
           />
-          
-          <Button 
+
+          <Button
             id="wd-signin-btn"
             onClick={signin}
             className="btn btn-primary w-100 mb-3"
-            style={{ fontSize: '16px', padding: '12px' }}
+            style={{ fontSize: "16px", padding: "12px" }}
           >
             Signin
           </Button>
-          
-          <Link 
-            id="wd-signup-link" 
+
+          <Link
+            id="wd-signup-link"
             href="/Account/Signup"
             className="text-primary text-decoration-underline"
           >

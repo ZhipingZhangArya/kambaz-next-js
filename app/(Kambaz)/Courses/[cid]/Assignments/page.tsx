@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,7 +7,8 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { FaSearch, FaPlus, FaChevronDown, FaFileAlt, FaCheckCircle, FaTrash } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments } from "./reducer";
+import * as client from "./client";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -23,8 +24,36 @@ export default function Assignments() {
   // Check if current user is faculty
   const isFaculty = currentUser?.role === "FACULTY";
   
-  // Filter assignments for the current course
-  const courseAssignments = assignments.filter((assignment: any) => assignment.course === cid);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const courseAssignments = assignments.filter(
+    (assignment: any) => assignment.course === cid
+  );
+
+  const fetchAssignments = async () => {
+    if (!cid) {
+      dispatch(setAssignments([]));
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const data = await client.findAssignmentsForCourse(cid as string);
+      dispatch(setAssignments(data));
+      setError(null);
+    } catch (err: any) {
+      console.error("Error fetching assignments", err);
+      setError("Unable to load assignments.");
+      dispatch(setAssignments([]));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cid]);
   
   const handleDeleteClick = (assignment: any, e: React.MouseEvent) => {
     e.preventDefault();
@@ -33,11 +62,17 @@ export default function Assignments() {
     setShowDeleteModal(true);
   };
   
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (assignmentToDelete) {
-      dispatch(deleteAssignment(assignmentToDelete._id));
-      setShowDeleteModal(false);
-      setAssignmentToDelete(null);
+      try {
+        await client.deleteAssignment(assignmentToDelete._id);
+        dispatch(deleteAssignment(assignmentToDelete._id));
+        setShowDeleteModal(false);
+        setAssignmentToDelete(null);
+      } catch (err) {
+        console.error("Error deleting assignment", err);
+        setError("Unable to delete assignment.");
+      }
     }
   };
   
@@ -93,7 +128,13 @@ export default function Assignments() {
         </div>
         
         <div className="border border-top-0">
-          {courseAssignments.map((assignment: any) => (
+          {isLoading && (
+            <div className="p-3 text-muted">Loading assignments...</div>
+          )}
+          {error && !isLoading && (
+            <div className="p-3 text-danger">{error}</div>
+          )}
+          {courseAssignments.map((assignment) => (
             <div key={assignment._id} className="border-bottom p-3" style={{ borderLeft: '3px solid green' }}>
               <div className="d-flex align-items-start justify-content-between">
                 {isFaculty ? (

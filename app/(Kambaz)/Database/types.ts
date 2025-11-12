@@ -23,7 +23,6 @@ export interface Module {
   name: string;
   description: string;
   course: string;
-  editing?: boolean; // Optional - for UI state management
   lessons?: Lesson[]; // Optional - some modules may not have lessons
 }
 

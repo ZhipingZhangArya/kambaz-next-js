@@ -2,39 +2,17 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { Button, FormControl } from "react-bootstrap";
+import { FormControl, Button } from "react-bootstrap";
 import { setCurrentUser, updateCurrentUser } from "../reducer";
+import * as client from "../client";
 
 export default function Profile() {
   const [profile, setProfile] = useState<any>({});
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  
-  // Helper function to update signupUsers in localStorage
-  const updateSignupUsers = (updatedUser: any) => {
-    const storedUsers = localStorage.getItem('signupUsers');
-    if (storedUsers) {
-      try {
-        const users = JSON.parse(storedUsers);
-        const userIndex = users.findIndex((u: any) => u._id === updatedUser._id);
-        if (userIndex !== -1) {
-          users[userIndex] = updatedUser;
-          localStorage.setItem('signupUsers', JSON.stringify(users));
-        }
-      } catch (e) {
-        console.error("Error updating signup users:", e);
-      }
-    }
-  };
-  
-  // Helper function to handle field updates
-  const handleFieldUpdate = (field: string, value: any) => {
-    const updatedProfile = { ...profile, [field]: value };
-    setProfile(updatedProfile);
-    dispatch(updateCurrentUser({ [field]: value }));
-    updateSignupUsers(updatedProfile);
-  };
   
   const fetchProfile = () => {
     if (!currentUser) {
@@ -44,9 +22,27 @@ export default function Profile() {
     setProfile(currentUser);
   };
   
-  const signout = () => {
-    dispatch(setCurrentUser(null));
-    router.push("/Account/Signin");
+  const updateProfile = async () => {
+    try {
+      const updatedProfile = await client.updateUser(profile);
+      dispatch(setCurrentUser(updatedProfile));
+      setError(null);
+    } catch (e: any) {
+      const message =
+        e?.response?.data?.message ?? "Unable to update profile. Try again.";
+      setError(message);
+    }
+  };
+  
+  const signout = async () => {
+    try {
+      await client.signout();
+    } catch (error) {
+      console.error("Signout failed", error);
+    } finally {
+      dispatch(setCurrentUser(null));
+      router.push("/Account/Signin");
+    }
   };
   
   useEffect(() => {
@@ -59,20 +55,34 @@ export default function Profile() {
         <div className="col-md-6 col-lg-4">
           <h1 className="mb-4 fw-bold text-dark">Profile</h1>
           
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+          
           {profile && (
             <>
               <FormControl 
                 id="wd-username"
-                defaultValue={profile.username}
-                onChange={(e) => handleFieldUpdate('username', e.target.value)}
+                value={profile.username || ""}
+                onChange={(e) => {
+                  const updatedProfile = { ...profile, username: e.target.value };
+                  setProfile(updatedProfile);
+                  dispatch(updateCurrentUser({ username: e.target.value }));
+                }}
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               />
               
               <FormControl 
                 id="wd-password"
-                defaultValue={profile.password}
-                onChange={(e) => handleFieldUpdate('password', e.target.value)}
+                value={profile.password || ""}
+                onChange={(e) => {
+                  const updatedProfile = { ...profile, password: e.target.value };
+                  setProfile(updatedProfile);
+                  dispatch(updateCurrentUser({ password: e.target.value }));
+                }}
                 type="password"
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
@@ -81,8 +91,12 @@ export default function Profile() {
               <FormControl 
                 id="wd-firstname"
                 placeholder="First Name"
-                defaultValue={profile.firstName}
-                onChange={(e) => handleFieldUpdate('firstName', e.target.value)}
+                value={profile.firstName || ""}
+                onChange={(e) => {
+                  const updatedProfile = { ...profile, firstName: e.target.value };
+                  setProfile(updatedProfile);
+                  dispatch(updateCurrentUser({ firstName: e.target.value }));
+                }}
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               />
@@ -90,8 +104,12 @@ export default function Profile() {
               <FormControl 
                 id="wd-lastname"
                 placeholder="Last Name"
-                defaultValue={profile.lastName}
-                onChange={(e) => handleFieldUpdate('lastName', e.target.value)}
+                value={profile.lastName || ""}
+                onChange={(e) => {
+                  const updatedProfile = { ...profile, lastName: e.target.value };
+                  setProfile(updatedProfile);
+                  dispatch(updateCurrentUser({ lastName: e.target.value }));
+                }}
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               />
@@ -100,8 +118,12 @@ export default function Profile() {
                 id="wd-dob"
                 type="date"
                 placeholder="Date of Birth"
-                defaultValue={profile.dob}
-                onChange={(e) => handleFieldUpdate('dob', e.target.value)}
+                value={profile.dob || ""}
+                onChange={(e) => {
+                  const updatedProfile = { ...profile, dob: e.target.value };
+                  setProfile(updatedProfile);
+                  dispatch(updateCurrentUser({ dob: e.target.value }));
+                }}
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               />
@@ -109,8 +131,12 @@ export default function Profile() {
               <FormControl 
                 id="wd-email"
                 placeholder="Email"
-                defaultValue={profile.email}
-                onChange={(e) => handleFieldUpdate('email', e.target.value)}
+                value={profile.email || ""}
+                onChange={(e) => {
+                  const updatedProfile = { ...profile, email: e.target.value };
+                  setProfile(updatedProfile);
+                  dispatch(updateCurrentUser({ email: e.target.value }));
+                }}
                 type="email"
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
@@ -120,7 +146,11 @@ export default function Profile() {
                 id="wd-role"
                 as="select"
                 value={profile.role || "USER"}
-                onChange={(e) => handleFieldUpdate('role', e.target.value)}
+                onChange={(e) => {
+                  const updatedProfile = { ...profile, role: e.target.value };
+                  setProfile(updatedProfile);
+                  dispatch(updateCurrentUser({ role: e.target.value }));
+                }}
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               >
@@ -129,6 +159,16 @@ export default function Profile() {
                 <option value="FACULTY">Faculty</option>
                 <option value="STUDENT">Student</option>
               </FormControl>
+              
+              <Button
+                id="wd-update-profile-btn"
+                onClick={updateProfile}
+                variant="primary"
+                className="w-100 mb-2"
+                style={{ fontSize: "16px", padding: "12px" }}
+              >
+                Update
+              </Button>
               
               <Button 
                 id="wd-signout-btn"

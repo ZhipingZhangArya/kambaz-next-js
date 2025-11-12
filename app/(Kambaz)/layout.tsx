@@ -12,6 +12,7 @@ import Image from "next/image";
 import "./styles.css";
 import store from "./store";
 import { Provider } from "react-redux";
+import Session from "./Account/Session";
 
 export default function KambazLayout({ children }: Readonly<{ children: ReactNode }>) {
   const pathname = usePathname();
@@ -101,6 +102,7 @@ export default function KambazLayout({ children }: Readonly<{ children: ReactNod
 
   return (
     <Provider store={store}>
+      <Session>
       <div id="wd-kambaz">
         {/* Mobile Header */}
         <div className="d-flex justify-content-between align-items-center bg-dark text-white p-2 d-md-none mobile-header">
@@ -287,6 +289,7 @@ export default function KambazLayout({ children }: Readonly<{ children: ReactNod
         </div>
       </div>
       </div>
+      </Session>
     </Provider>
   );
 }

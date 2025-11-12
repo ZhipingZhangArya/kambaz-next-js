@@ -3,80 +3,75 @@ import { useState } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { Form, Button } from "react-bootstrap";
+import { FormControl, Button } from "react-bootstrap";
 import { setCurrentUser } from "../reducer";
-import { v4 as uuidv4 } from "uuid";
+import * as client from "../client";
 
 export default function Signup() {
-  const [credentials, setCredentials] = useState<any>({});
+  const [user, setUser] = useState<any>({});
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
-  
-  const signup = () => {
-    const newUser = {
-      _id: uuidv4(),
-      username: credentials.username,
-      password: credentials.password,
-      firstName: credentials.firstName || "",
-      lastName: credentials.lastName || "",
-      email: credentials.email || "",
-      dob: credentials.dob || "",
-      role: credentials.role || "STUDENT"
-    };
-    
-    // Save new user to localStorage
-    const storedUsers = localStorage.getItem('signupUsers');
-    let users = [];
-    if (storedUsers) {
-      try {
-        users = JSON.parse(storedUsers);
-      } catch (e) {
-        console.error("Error parsing stored users:", e);
-      }
+
+  const signup = async () => {
+    if (!user.username || !user.password) {
+      setError("Please enter both username and password");
+      return;
     }
-    users.push(newUser);
-    localStorage.setItem('signupUsers', JSON.stringify(users));
-    
-    dispatch(setCurrentUser(newUser));
-    router.push("/Account/Profile");
+    try {
+      const currentUser = await client.signup(user);
+      dispatch(setCurrentUser(currentUser));
+      setError(null);
+      router.push("/Account/Profile");
+    } catch (e: any) {
+      const message =
+        e?.response?.data?.message ?? "Unable to sign up. Please try again.";
+      setError(message);
+    }
   };
-  
+
   return (
     <div id="wd-signup-screen" className="container-fluid p-4">
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-4">
           <h1 className="mb-4 fw-bold text-dark">Signup</h1>
-          
-          <Form.Control 
+
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+
+          <FormControl
             id="wd-username"
             placeholder="username"
             className="mb-3 border-secondary"
-            style={{ fontSize: '16px', padding: '12px' }}
-            value={credentials.username || ""}
-            onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+            style={{ fontSize: "16px", padding: "12px" }}
+            value={user.username || ""}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
           />
-          
-          <Form.Control 
+
+          <FormControl
             id="wd-password"
-            placeholder="password" 
+            placeholder="password"
             type="password"
             className="mb-3 border-secondary"
-            style={{ fontSize: '16px', padding: '12px' }}
-            value={credentials.password || ""}
-            onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+            style={{ fontSize: "16px", padding: "12px" }}
+            value={user.password || ""}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
-          
-          <Button 
+
+          <Button
             id="wd-signup-btn"
             onClick={signup}
             className="btn btn-primary w-100 mb-3"
-            style={{ fontSize: '16px', padding: '12px' }}
+            style={{ fontSize: "16px", padding: "12px" }}
           >
             Signup
           </Button>
-          
-          <Link 
-            id="wd-signin-link" 
+
+          <Link
+            id="wd-signin-link"
             href="/Account/Signin"
             className="text-primary text-decoration-underline"
           >
