@@ -88,17 +88,11 @@ export default function Dashboard() {
     }
 
     setIsLoadingEnrollments(true);
-    setError(null);
     try {
       const data = await enrollmentsClient.fetchMyEnrollments();
-      dispatch(setEnrollments(data || []));
-    } catch (err: any) {
-      // If 401, user is not authenticated - don't show error, just show empty
-      // This can happen in incognito mode when third-party cookies are blocked
-      if (err.response?.status === 401) {
-        dispatch(setEnrollments([]));
-        return;
-      }
+      dispatch(setEnrollments(data));
+      setError(null);
+    } catch (err) {
       console.error("Error fetching enrollments", err);
       dispatch(setEnrollments([]));
       setError("Unable to load enrollments.");
@@ -192,26 +186,18 @@ export default function Dashboard() {
         await enrollmentsClient.unenrollFromCourse(courseId);
         dispatch(deleteEnrollment(enrollment._id));
         setError(null);
-        // Re-fetch enrollments to ensure UI is consistent with server
-        const updatedEnrollments = await enrollmentsClient.fetchMyEnrollments();
-        dispatch(setEnrollments(updatedEnrollments));
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error unenrolling", err);
-        const errorMessage = err?.message || err?.response?.data?.message || "Unable to unenroll from course.";
-        setError(errorMessage);
+        setError("Unable to unenroll from course.");
       }
     } else {
       try {
         const newEnrollment = await enrollmentsClient.enrollInCourse(courseId);
         dispatch(addEnrollment(newEnrollment));
         setError(null);
-        // Re-fetch enrollments to ensure UI is consistent with server
-        const updatedEnrollments = await enrollmentsClient.fetchMyEnrollments();
-        dispatch(setEnrollments(updatedEnrollments));
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error enrolling", err);
-        const errorMessage = err?.message || err?.response?.data?.message || "Unable to enroll in course.";
-        setError(errorMessage);
+        setError("Unable to enroll in course.");
       }
     }
   };
@@ -227,7 +213,7 @@ export default function Dashboard() {
   };
 
   const isFaculty = currentUser?.role === "FACULTY";
-  
+
   return (
     <div className="p-4" id="wd-dashboard">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -309,8 +295,8 @@ export default function Dashboard() {
                       width="100%"
                       height={160}
                     />
-                  <CardBody className="card-body">
-                    <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    <CardBody className="card-body">
+                      <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
                         {course.name}
                       </CardTitle>
                       <CardText
@@ -319,8 +305,8 @@ export default function Dashboard() {
                       >
                         {course.description}
                       </CardText>
-                  </CardBody>
-                </Link>
+                    </CardBody>
+                  </Link>
                 ) : (
                   <div>
                     <CardImg
