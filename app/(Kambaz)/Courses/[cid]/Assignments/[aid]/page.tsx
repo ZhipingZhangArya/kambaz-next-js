@@ -183,6 +183,7 @@ export default function AssignmentEditor() {
           <div className="mb-3">
             <div className="fw-bold text-dark mb-2">Due</div>
             <CustomDatePicker
+              key={`due-${currentAssignment._id}-${currentAssignment.dueDate}`}
               defaultValue={currentAssignment.dueDate}
               className="border-secondary"
               style={{ fontSize: '16px', padding: '12px' }}
@@ -193,6 +194,7 @@ export default function AssignmentEditor() {
             <div className="col-6">
               <div className="fw-bold text-dark mb-2">Available from</div>
               <CustomDatePicker
+                key={`available-${currentAssignment._id}-${currentAssignment.availableDate}`}
                 defaultValue={currentAssignment.availableDate}
                 className="border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
@@ -202,7 +204,7 @@ export default function AssignmentEditor() {
               <div className="fw-bold text-dark mb-2">Until</div>
               <CustomDatePicker
                 key={`until-${currentAssignment._id}-${currentAssignment.dueDate}`}
-                defaultValue={currentAssignment.dueDate}
+                defaultValue={currentAssignment.dueDate || ""}
                 className="border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               />

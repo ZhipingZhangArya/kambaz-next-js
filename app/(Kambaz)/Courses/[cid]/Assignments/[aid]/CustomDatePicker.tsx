@@ -53,19 +53,22 @@ export default function CustomDatePicker({
 
   // Initialize with default value
   useEffect(() => {
-    console.log('[CustomDatePicker] defaultValue changed:', defaultValue);
-    if (defaultValue) {
+    console.log('[CustomDatePicker] defaultValue changed:', defaultValue, 'type:', typeof defaultValue);
+    if (defaultValue && defaultValue.trim() !== '') {
       const date = parseDateFromISO(defaultValue);
-      console.log('[CustomDatePicker] Parsed date:', date);
+      console.log('[CustomDatePicker] Parsed date:', date, 'isValid:', date && !isNaN(date.getTime()));
       if (date && !isNaN(date.getTime())) {
         setSelectedDate(date);
         const formatted = formatDateForDisplay(date);
         console.log('[CustomDatePicker] Setting display value:', formatted);
         setDisplayValue(formatted);
       } else {
-        console.warn('[CustomDatePicker] Invalid date:', defaultValue);
+        console.warn('[CustomDatePicker] Invalid date:', defaultValue, 'parsed as:', date);
+        setSelectedDate(null);
+        setDisplayValue("");
       }
     } else {
+      console.log('[CustomDatePicker] No defaultValue, initializing empty');
       // Initialize with current date and time if no default value,
       // so time inputs are always populated when calendar opens
       setSelectedDate(new Date());
