@@ -51,7 +51,7 @@ export default function AssignmentEditor() {
             points: existingAssignment.points || 100,
             dueDate: existingAssignment.dueDate || "",
             availableDate: existingAssignment.availableDate || "",
-            availableUntil: existingAssignment.availableUntil || "",
+            availableUntil: existingAssignment.availableUntil || existingAssignment.dueDate || "",
             course: existingAssignment.course,
           });
         } else if (aid) {
@@ -63,7 +63,7 @@ export default function AssignmentEditor() {
             points: fetched.points || 100,
             dueDate: fetched.dueDate || "",
             availableDate: fetched.availableDate || "",
-            availableUntil: fetched.availableUntil || "",
+            availableUntil: fetched.availableUntil || fetched.dueDate || "",
             course: fetched.course,
           });
         }
