@@ -53,11 +53,17 @@ export default function CustomDatePicker({
 
   // Initialize with default value
   useEffect(() => {
+    console.log('[CustomDatePicker] defaultValue changed:', defaultValue);
     if (defaultValue) {
       const date = parseDateFromISO(defaultValue);
-      if (date) {
+      console.log('[CustomDatePicker] Parsed date:', date);
+      if (date && !isNaN(date.getTime())) {
         setSelectedDate(date);
-        setDisplayValue(formatDateForDisplay(date));
+        const formatted = formatDateForDisplay(date);
+        console.log('[CustomDatePicker] Setting display value:', formatted);
+        setDisplayValue(formatted);
+      } else {
+        console.warn('[CustomDatePicker] Invalid date:', defaultValue);
       }
     } else {
       // Initialize with current date and time if no default value,

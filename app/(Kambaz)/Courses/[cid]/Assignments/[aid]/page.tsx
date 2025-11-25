@@ -33,6 +33,8 @@ export default function AssignmentEditor() {
       }
       try {
         const assignment = await client.findAssignmentById(aid as string);
+        console.log('[AssignmentEditor] Fetched assignment:', assignment);
+        console.log('[AssignmentEditor] dueDate:', assignment?.dueDate);
         setCurrentAssignment(assignment || defaultAssignment);
       } catch (error) {
         console.error('Error fetching assignment:', error);
@@ -199,6 +201,7 @@ export default function AssignmentEditor() {
             <div className="col-6">
               <div className="fw-bold text-dark mb-2">Until</div>
               <CustomDatePicker
+                key={`until-${currentAssignment._id}-${currentAssignment.dueDate}`}
                 defaultValue={currentAssignment.dueDate}
                 className="border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
