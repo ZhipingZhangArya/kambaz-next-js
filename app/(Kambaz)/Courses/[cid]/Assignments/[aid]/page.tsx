@@ -199,6 +199,7 @@ export default function AssignmentEditor() {
             <div className="col-6">
               <div className="fw-bold text-dark mb-2">Until</div>
               <CustomDatePicker
+                defaultValue={currentAssignment.dueDate}
                 className="border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               />
