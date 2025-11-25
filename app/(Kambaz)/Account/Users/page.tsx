@@ -9,25 +9,48 @@ export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
   const [role, setRole] = useState("");
   const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchUsers = async () => {
-    const users = await client.findAllUsers();
-    setUsers(users);
+    try {
+      setLoading(true);
+      setError(null);
+      const usersData = await client.findAllUsers();
+      console.log("[Users] Fetched users:", usersData);
+      setUsers(usersData || []);
+    } catch (error: any) {
+      console.error("[Users] Error fetching users:", error);
+      setError(error?.response?.data?.message || error?.message || "Failed to fetch users. Please try again.");
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filterUsers = async () => {
-    if (role && name) {
-      // Filter by both role and name
-      const users = await client.findUsersByRoleAndName(role, name);
-      setUsers(users);
-    } else if (role) {
-      const users = await client.findUsersByRole(role);
-      setUsers(users);
-    } else if (name) {
-      const users = await client.findUsersByPartialName(name);
-      setUsers(users);
-    } else {
-      fetchUsers();
+    try {
+      setLoading(true);
+      setError(null);
+      let usersData;
+      if (role && name) {
+        // Filter by both role and name
+        usersData = await client.findUsersByRoleAndName(role, name);
+      } else if (role) {
+        usersData = await client.findUsersByRole(role);
+      } else if (name) {
+        usersData = await client.findUsersByPartialName(name);
+      } else {
+        usersData = await client.findAllUsers();
+      }
+      console.log("[Users] Filtered users:", usersData);
+      setUsers(usersData || []);
+    } catch (error: any) {
+      console.error("[Users] Error filtering users:", error);
+      setError(error?.response?.data?.message || error?.message || "Failed to filter users. Please try again.");
+      setUsers([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,11 +104,21 @@ export default function Users() {
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3>Users</h3>
-        <Button onClick={createUser} className="btn btn-danger wd-add-people">
+        <Button onClick={createUser} className="btn btn-danger wd-add-people" disabled={loading}>
           <FaPlus className="me-2" />
           Users
         </Button>
       </div>
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+      {loading && (
+        <div className="alert alert-info" role="alert">
+          Loading users...
+        </div>
+      )}
       <div className="mb-3">
         <FormControl
           onChange={(e) => filterUsersByName(e.target.value)}
@@ -106,6 +139,11 @@ export default function Users() {
         </select>
         <div className="clearfix"></div>
       </div>
+      {!loading && users.length === 0 && !error && (
+        <div className="alert alert-info" role="alert">
+          No users found.
+        </div>
+      )}
       <PeopleTable users={users} fetchUsers={fetchUsers} />
     </div>
   );

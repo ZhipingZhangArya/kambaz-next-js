@@ -71,25 +71,54 @@ export const signout = async () => {
 };
 
 export const findAllUsers = async () => {
-  const response = await axiosWithCredentials.get(USERS_API);
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.get(USERS_API);
+    return response.data;
+  } catch (error: any) {
+    console.error("[findAllUsers] Error:", error);
+    if (error.response) {
+      // Server responded with error status
+      throw error;
+    } else if (error.request) {
+      // Request was made but no response received
+      throw new Error("Network error: Unable to fetch users. Please check if the server is running.");
+    } else {
+      // Something else happened
+      throw error;
+    }
+  }
 };
 
 export const findUsersByRole = async (role: string) => {
-  const response = await axiosWithCredentials.get(`${USERS_API}?role=${encodeURIComponent(role)}`);
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.get(`${USERS_API}?role=${encodeURIComponent(role)}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("[findUsersByRole] Error:", error);
+    throw error;
+  }
 };
 
 export const findUsersByPartialName = async (name: string) => {
-  const response = await axiosWithCredentials.get(`${USERS_API}?name=${encodeURIComponent(name)}`);
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.get(`${USERS_API}?name=${encodeURIComponent(name)}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("[findUsersByPartialName] Error:", error);
+    throw error;
+  }
 };
 
 export const findUsersByRoleAndName = async (role: string, name: string) => {
-  const response = await axiosWithCredentials.get(
-    `${USERS_API}?role=${encodeURIComponent(role)}&name=${encodeURIComponent(name)}`
-  );
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.get(
+      `${USERS_API}?role=${encodeURIComponent(role)}&name=${encodeURIComponent(name)}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("[findUsersByRoleAndName] Error:", error);
+    throw error;
+  }
 };
 
 export const findUserById = async (id: string) => {
