@@ -25,14 +25,23 @@ export default function Modules() {
 
   const fetchModules = async () => {
     if (!cid) {
+      console.log("[Modules] No course ID, setting empty modules");
       dispatch(setModules([]));
       return;
     }
     try {
+      console.log("[Modules] Fetching modules for course:", cid);
       const data = await client.findModulesForCourse(cid as string);
-      dispatch(setModules(data));
-    } catch (error) {
-      console.error("Error fetching modules", error);
+      console.log("[Modules] Received modules data:", data);
+      console.log("[Modules] Modules count:", Array.isArray(data) ? data.length : "not an array");
+      dispatch(setModules(data || []));
+    } catch (error: any) {
+      console.error("[Modules] Error fetching modules", error);
+      console.error("[Modules] Error details:", {
+        message: error?.message,
+        response: error?.response?.data,
+        status: error?.response?.status
+      });
       dispatch(setModules([]));
     }
   };
