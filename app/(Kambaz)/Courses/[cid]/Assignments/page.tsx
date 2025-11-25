@@ -33,16 +33,25 @@ export default function Assignments() {
 
   const fetchAssignments = async () => {
     if (!cid) {
+      console.log("[Assignments] No course ID, setting empty assignments");
       dispatch(setAssignments([]));
       return;
     }
     setIsLoading(true);
     try {
+      console.log("[Assignments] Fetching assignments for course:", cid);
       const data = await client.findAssignmentsForCourse(cid as string);
-      dispatch(setAssignments(data));
+      console.log("[Assignments] Received assignments data:", data);
+      console.log("[Assignments] Assignments count:", Array.isArray(data) ? data.length : "not an array");
+      dispatch(setAssignments(data || []));
       setError(null);
     } catch (err: any) {
-      console.error("Error fetching assignments", err);
+      console.error("[Assignments] Error fetching assignments", err);
+      console.error("[Assignments] Error details:", {
+        message: err?.message,
+        response: err?.response?.data,
+        status: err?.response?.status
+      });
       setError("Unable to load assignments.");
       dispatch(setAssignments([]));
     } finally {
