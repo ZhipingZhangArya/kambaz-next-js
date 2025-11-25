@@ -179,12 +179,12 @@ export default function PeopleTable() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user: User) => (
+            {users.filter((user) => user !== null && user !== undefined).map((user: User) => (
               <tr key={user._id}>
                 <td className="wd-full-name text-nowrap">
                   <FaUserCircle className="me-2 fs-1 text-secondary" />
-                  <span className="wd-first-name">{user.firstName}</span>{" "}
-                  <span className="wd-last-name">{user.lastName}</span>
+                  <span className="wd-first-name">{user?.firstName || ""}</span>{" "}
+                  <span className="wd-last-name">{user?.lastName || ""}</span>
                 </td>
                 <td className="wd-login-id">{user.loginId || user.username}</td>
                 <td className="wd-section">{user.section}</td>
