@@ -22,7 +22,7 @@ export default function Session({ children }: { children: ReactNode }) {
     } catch (error: any) {
       // Only log non-401 errors (network errors, 500 errors, etc.)
       // 401 errors are handled in client.profile() by returning null
-      console.error("Unable to fetch profile", error);
+      // Don't log errors here as they're already handled in client.profile()
       dispatch(setCurrentUser(null));
     } finally {
       setPending(false);

@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 
 export default function AccountNavigation() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const pathname = usePathname();
   const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
@@ -15,11 +14,19 @@ export default function AccountNavigation() {
         <Link 
           key={link}
           href={`/Account/${link}`}
-          className={`list-group-item border-0 ${pathname.endsWith(link.toLowerCase()) ? "active" : "text-danger"}`}
+          className={`list-group-item border-0 ${pathname.endsWith(link) ? "active" : "text-danger"}`}
         >
           {link}
         </Link>
       ))}
+      {currentUser && (currentUser.role === "ADMIN" || currentUser.role === "FACULTY") && (
+        <Link 
+          href="/Account/Users"
+          className={`list-group-item border-0 ${pathname.endsWith("Users") ? "active" : "text-danger"}`}
+        >
+          Users
+        </Link>
+      )}
     </div>
   );
 }

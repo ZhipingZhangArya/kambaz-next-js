@@ -61,6 +61,22 @@ export default function Signup() {
             onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
 
+          <FormControl
+            id="wd-role"
+            as="select"
+            placeholder="Role"
+            className="mb-3 border-secondary"
+            style={{ fontSize: "16px", padding: "12px" }}
+            value={user.role || "USER"}
+            onChange={(e) => setUser({ ...user, role: e.target.value })}
+          >
+            <option value="USER">User</option>
+            <option value="STUDENT">Student</option>
+            <option value="TA">TA</option>
+            <option value="FACULTY">Faculty</option>
+            <option value="ADMIN">Admin</option>
+          </FormControl>
+
           <Button
             id="wd-signup-btn"
             onClick={signup}
