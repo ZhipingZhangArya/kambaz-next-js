@@ -56,8 +56,9 @@ export default function Modules() {
   };
 
   const onRemoveModule = async (moduleId: string) => {
+    if (!cid) return;
     try {
-      await client.deleteModule(moduleId);
+      await client.deleteModule(cid as string, moduleId);
       dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
     } catch (error) {
       console.error("Error deleting module", error);
@@ -65,15 +66,13 @@ export default function Modules() {
   };
 
   const onUpdateModule = async (updatedModule: any) => {
+    if (!cid) return;
     try {
-      const savedModule = await client.updateModule(updatedModule);
-      dispatch(
-        setModules(
-          modules.map((module: any) =>
-            module._id === savedModule._id ? savedModule : module
-          )
-        )
+      const savedModule = await client.updateModule(cid as string, updatedModule);
+      const newModules = modules.map((m: any) =>
+        m._id === savedModule._id ? savedModule : m
       );
+      dispatch(setModules(newModules));
     } catch (error) {
       console.error("Error updating module", error);
     }

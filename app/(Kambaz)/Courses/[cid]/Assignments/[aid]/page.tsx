@@ -1,20 +1,17 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, Card, Button } from 'react-bootstrap';
 import Link from 'next/link';
-import assignments from '../../../../Database/assignments.json';
-import { Assignment } from '../../../../Database';
 import CustomDatePicker from './CustomDatePicker';
+import * as client from '../client';
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   const [showOnlineOptions, setShowOnlineOptions] = useState(true);
-  
-  // Find the assignment from the database
-  const assignment = (assignments as Assignment[])
-    .find((a: Assignment) => a._id === aid && a.course === cid);
+  const [currentAssignment, setCurrentAssignment] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   
   // Default assignment data if not found
   const defaultAssignment = {
@@ -27,7 +24,30 @@ export default function AssignmentEditor() {
     availableDate: '2024-05-06T00:00'
   };
   
-  const currentAssignment = assignment || defaultAssignment;
+  useEffect(() => {
+    const fetchAssignment = async () => {
+      if (!aid) {
+        setCurrentAssignment(defaultAssignment);
+        setLoading(false);
+        return;
+      }
+      try {
+        const assignment = await client.findAssignmentById(aid as string);
+        setCurrentAssignment(assignment || defaultAssignment);
+      } catch (error) {
+        console.error('Error fetching assignment:', error);
+        setCurrentAssignment(defaultAssignment);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAssignment();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aid]);
+  
+  if (loading || !currentAssignment) {
+    return <div>Loading...</div>;
+  }
   
   return (
     <div id="wd-assignments-editor" className="container-fluid p-4">
