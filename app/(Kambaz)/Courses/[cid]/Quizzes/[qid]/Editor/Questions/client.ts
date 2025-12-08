@@ -2,7 +2,11 @@ import axios from "axios";
 
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
-const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
+// Get HTTP_SERVER from environment variable, with fallback
+const envServer = process.env.NEXT_PUBLIC_HTTP_SERVER;
+const HTTP_SERVER = (envServer && envServer !== 'undefined') 
+  ? envServer 
+  : 'http://localhost:4000';
 const QUIZZES_API = `${HTTP_SERVER}/api/quizzes`;
 const QUESTIONS_API = `${HTTP_SERVER}/api/questions`;
 

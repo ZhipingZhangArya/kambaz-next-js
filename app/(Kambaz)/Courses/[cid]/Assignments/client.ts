@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
+// Get HTTP_SERVER from environment variable, with fallback
+const envServer = process.env.NEXT_PUBLIC_HTTP_SERVER;
+const HTTP_SERVER = (envServer && envServer !== 'undefined') 
+  ? envServer 
+  : 'http://localhost:4000';
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const ASSIGNMENTS_API = `${HTTP_SERVER}/api/assignments`;
 
