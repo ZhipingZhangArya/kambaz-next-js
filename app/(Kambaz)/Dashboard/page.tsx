@@ -92,10 +92,19 @@ export default function Dashboard() {
       const data = await enrollmentsClient.fetchMyEnrollments();
       dispatch(setEnrollments(data));
       setError(null);
-    } catch (err) {
+    } catch (err: any) {
+      // If 401, user is not authenticated - don't show error, just show empty
+      if (err.response?.status === 401) {
+        console.log("[Dashboard] User not authenticated, skipping enrollments fetch");
+        dispatch(setEnrollments([]));
+        return;
+      }
       console.error("Error fetching enrollments", err);
       dispatch(setEnrollments([]));
-      setError("Unable to load enrollments.");
+      // Don't set error for 401 - it's expected if user just signed up
+      if (err.response?.status !== 401) {
+        setError("Unable to load enrollments.");
+      }
     } finally {
       setIsLoadingEnrollments(false);
     }

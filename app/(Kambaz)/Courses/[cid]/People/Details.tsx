@@ -183,11 +183,8 @@ export default function PeopleDetails({
             onKeyDown={handleKeyDown}
             autoFocus={editingRole && !editing}
           >
-            <option value="USER">User</option>
             <option value="STUDENT">Student</option>
-            <option value="TA">TA</option>
             <option value="FACULTY">Faculty</option>
-            <option value="ADMIN">Admin</option>
           </select>
         )}
       </div>

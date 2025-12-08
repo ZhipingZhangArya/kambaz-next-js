@@ -154,10 +154,8 @@ export default function Profile() {
                 className="mb-3 border-secondary"
                 style={{ fontSize: '16px', padding: '12px' }}
               >
-                <option value="USER">User</option>
-                <option value="ADMIN">Admin</option>
-                <option value="FACULTY">Faculty</option>
                 <option value="STUDENT">Student</option>
+                <option value="FACULTY">Faculty</option>
               </FormControl>
               
               <Button

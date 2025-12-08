@@ -67,14 +67,11 @@ export default function Signup() {
             placeholder="Role"
             className="mb-3 border-secondary"
             style={{ fontSize: "16px", padding: "12px" }}
-            value={user.role || "USER"}
+            value={user.role || "STUDENT"}
             onChange={(e) => setUser({ ...user, role: e.target.value })}
           >
-            <option value="USER">User</option>
             <option value="STUDENT">Student</option>
-            <option value="TA">TA</option>
             <option value="FACULTY">Faculty</option>
-            <option value="ADMIN">Admin</option>
           </FormControl>
 
           <Button
